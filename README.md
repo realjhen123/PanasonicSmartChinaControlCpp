@@ -1,6 +1,6 @@
 # PanasonicSmartChinaControlCpp
 > Special thanks for [mcdona1d](https://github.com/mcdona1d "github/mcdona1d") and his [Project](https://github.com/mcdona1d/panasonic_smart_china)    
-> thanks for <https://bbs.hassbian.com/forum.php?mod=viewthread&tid=17153>
+> thanks for [hassbian.com](https://bbs.hassbian.com/forum.php?mod=viewthread&tid=17153)
 ___________________________________________
 
 This is a **API ENCAPSULATION** with **C++**.
