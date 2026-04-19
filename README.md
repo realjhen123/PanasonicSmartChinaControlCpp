@@ -7,13 +7,13 @@ This is a **API ENCAPSULATION** with **C++**.
 design for Panasonic Smart China.
 
 ## Using
-`
-PanasonicSmartChinaControl pscc;   
-pscc.Init();   
-pscc.Login(username,password);  
-deviceId = pscc.GetDevice();  
-pscc.Set(deviceId);  
-`
+```
+PanasonicSmartChinaControl pscc;
+pscc.Init();
+pscc.Login(username,password);
+deviceId = pscc.GetDevice();
+pscc.Set(deviceId);
+```
 > deviceId will in GetDevice's return   
 > username is your phone number   
 ________________________________________
