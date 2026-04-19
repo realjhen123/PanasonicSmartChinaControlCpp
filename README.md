@@ -1,5 +1,5 @@
 # PanasonicSmartChinaControlCpp
-> Special thanks for [mcdona1d](https://github.com/mcdona1d "github/mcdona1d") and his [Project](https://github.com/mcdona1d/panasonic_smart_china)
+> Special thanks for [mcdona1d](https://github.com/mcdona1d "github/mcdona1d") and his [Project](https://github.com/mcdona1d/panasonic_smart_china) <br>
 > thanks for <https://bbs.hassbian.com/forum.php?mod=viewthread&tid=17153>
 ___________________________________________
 
