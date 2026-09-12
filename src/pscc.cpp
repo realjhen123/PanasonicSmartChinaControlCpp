@@ -248,7 +248,7 @@ public:
 		return SUCCEED;
 	}
 	int timer(Json::Value& p, int timerid, int action, int state, int hour, int min, int week) {
-		bool r = timerid > 6 || timerid < 0;
+		bool r = timerid > 6 || timerid <= 0;
 		r |= action != 0 && action != 1;
 		r |= state != 0 && state != 1;
 		r |= hour >= 24 || hour < 0;
