@@ -35,6 +35,9 @@ bool debugmode = false;
 #endif
 #ifdef ENABLE_CROWSERVER
 #include <crow.h>
+#include <mutex>
+#include <ctime>
+#define PORT 9652
 #endif
 
 class jsonfile {
@@ -309,5 +312,95 @@ int main() {
 //	pscc.GetDevice();
 //	pscc.getStatus_v2(deviceId);
 //	pscc.easy_control_v2(deviceId, false, 1);
+#ifdef ENABLE_CROWSERVER
+	crow::SimpleApp app;
+	std::string status_cache = "";
+	time_t last_status = 0;
+	std::mutex mtx;
+	CROW_ROUTE(app, "/").methods("GET"_method)([](crow::response& res) {
+		res.code = 200;
+		res.body = "pscc running";
+		res.end();
+		return;
+		});
+	CROW_ROUTE(app, "/status/<string>").methods("GET"_method)([&](const crow::request req, crow::response& res, std::string status_type) {
+		time_t sec = std::time(nullptr);
+		std::string s;
+		{
+			std::lock_guard<std::mutex> lock(mtx);
+			if (sec <= last_status + 1) {
+				s = status_cache;
+			}
+			else {
+				s = pscc.getStatus_v2(deviceId);
+				status_cache = s;
+				last_status = std::time(nullptr);
+			}
+		}
 
+		if (status_type == "all") {
+			res.body = s;
+			res.code = 200;
+			res.end();
+			return;
+		}
+		else if (status_type == "env") {
+			Json::Value q = jsonfile::readJsonFromString(s);
+			Json::Value res_q;
+			res_q["PM2.5"] = q["results"]["oaPMC"].asInt();
+			res_q["humidity"] = q["results"]["oaHumC"].asInt();
+			res_q["temperature"] = q["results"]["oaTeC"].asInt();
+			res.write(jsonfile::jsontoString(res_q));
+			res.end();
+			res.code = 200;
+			return;
+		}
+		else if (status_type == "filter") {
+			Json::Value q = jsonfile::readJsonFromString(s);
+			Json::Value res_q;
+			res_q["filterCleanTimer"] = q["results"]["filClTL"].asInt();
+			res_q["primaryFilterCleanTimer"] = q["results"]["reFilExTL"].asInt();
+			res_q["PM2.5FilterCleanTimer"] = q["results"]["oaFilExPMTL"].asInt();
+			res_q["returnAirSideFilterCleanTimer"] = q["results"]["oaFilClFirTL"].asInt();
+			res.write(jsonfile::jsontoString(res_q));
+			res.end();
+			res.code = 200;
+			return;
+		}
+		else if (status_type == "basic") {
+			Json::Value q = jsonfile::readJsonFromString(s);
+			Json::Value res_q;
+			res_q["power"] = q["results"]["runSta"].asInt();
+			res_q["freshAirVelocity"] = q["results"]["airVo"].asInt();
+			res.write(jsonfile::jsontoString(res_q));
+			res.end();
+			res.code = 200;
+			return;
+		}
+		else {
+			res.write("para error");
+			res.code = 401;
+			return;
+		}
+		});
+	CROW_ROUTE(app, "/control/power/<string>").methods("GET"_method)([&](const crow::request req, crow::response& res, std::string status_type) {
+		if (status_type == "on") {
+			pscc.easy_control_v2(deviceId, true, 255);
+		}else {
+			pscc.easy_control_v2(deviceId, false, 255);
+		}
+		res.code = 200;
+		return;
+		});
+	CROW_ROUTE(app, "/control/airvo/<int>").methods("GET"_method)([&](const crow::request req, crow::response& res, int airVo) {
+		if (airVo > 3 || airVo <= 0) {
+			res.code = 401;
+			return;
+		}
+		pscc.easy_control_v2(deviceId, true, airVo);
+		res.code = 200;
+		return;
+		});
+	app.multithreaded().loglevel(crow::LogLevel::Critical).port(PORT).run();
+#endif
 }
