@@ -278,6 +278,7 @@ public:
 	int easy_control_v2(std::string deviceId,bool runSta,int airVo) {
 		Json::Value p;
 		this->timer(p);
+		this->otherset(p);
 		std::cout << p.toStyledString();
 		p["runSta"] = runSta ? 1 : 0;
 		p["airVo"] = airVo;
