@@ -222,7 +222,7 @@ public:
 		if (debugmode)std::cout << jsonfile::readJsonFromString(r_res).toStyledString();
 		return SUCCEED;
 	}
-	int getStatus_v2(std::string deviceId) {
+	std::string getStatus_v2(std::string deviceId) {
 		Json::Value req;
 		req["id"] = 1;
 		req["uiVersion"] = 4.0;
@@ -232,7 +232,7 @@ public:
 		std::string res;
 		this->POST(this->PSC_URL_GET_V2, jsonfile::jsontoString(req), res);
 		if (debugmode)std::cout << "\n" << res;
-		return SUCCEED;
+		return res;
 	}
 	int set_v2(std::string deviceId, Json::Value params) {
 		Json::Value req;
