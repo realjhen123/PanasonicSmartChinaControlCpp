@@ -268,7 +268,7 @@ public:
 		}
 		return SUCCEED;
 	}
-	int otherset(Json::Value p) {
+	int otherset(Json::Value& p) {
 		p["filSet"] = 0;
 		p["holM"] = 255;
 		p["saFilEx"] = 255;
