@@ -401,6 +401,8 @@ int main() {
 		res.code = 200;
 		return;
 		});
-	app.multithreaded().loglevel(crow::LogLevel::Critical).port(PORT).run();
+	app.loglevel(crow::LogLevel::Critical);
+	if(debugmode)app.loglevel(crow::LogLevel::Debug);
+	app.multithreaded().port(PORT).run();
 #endif
 }
