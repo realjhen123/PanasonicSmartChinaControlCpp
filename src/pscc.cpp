@@ -80,7 +80,9 @@ private:
 	const char* PSC_URL_LOGIN = "https://app.psmartcloud.com/App/UsrLogin";
 	const char* PSC_URL_GET_DEV = "https://app.psmartcloud.com/App/UsrGetBindDevInfo";
 	const char* PSC_URL_SET = "https://app.psmartcloud.com/App/ACDevSetStatusInfoAW";
+	const char* PSC_URL_SET_V2 = "https://app.psmartcloud.com/App/ADevSetStatusSmallERV";
 	const char* PSC_URL_GET = "https://app.psmartcloud.com/App/ACDevGetStatusInfoAW";
+	const char* PSC_URL_GET_V2 = "https://app.psmartcloud.com/App/ADevGetStatusSmallERV";
 	std::string calcpassword(std::string rawToken_) {
 		return PanasonicSmartChinaControl::md5_forPSC(PanasonicSmartChinaControl::md5_forPSC(PanasonicSmartChinaControl::md5_forPSC(this->password) + this->username) + rawToken_);
 	}
@@ -153,6 +155,9 @@ private:
 		std::string token = PanasonicSmartChinaControl::sha512_forPSC(stoken + '_' + suffix);
 		return token;
 	}
+	int addSSIDonCookie() {
+		return this->addHeader("Cookie: SSID=" + this->ssId);
+	}
 public:
 	PanasonicSmartChinaControl() {
 		curl_global_init(CURL_GLOBAL_ALL);
@@ -184,10 +189,11 @@ public:
 		this->ssId = res["results"]["ssId"].asString();
 		this->realFamilyId = res["results"]["realFamilyId"].asInt();
 		this->familyId = res["results"]["familyId"].asInt();
+		this->addSSIDonCookie();
 		return SUCCEED;
 	}
+	
 	std::string GetDevice() {
-		this->addHeader("Cookie: SSID=" + this->ssId);
 		std::string r_res;
 		{
 			Json::Value req;
@@ -216,6 +222,18 @@ public:
 		if (debugmode)std::cout << jsonfile::readJsonFromString(r_res).toStyledString();
 		return SUCCEED;
 	}
+	int getStatus_v2(std::string deviceId) {
+		Json::Value req;
+		req["id"] = 1;
+		req["uiVersion"] = 4.0;
+		req["params"]["usrId"] = this->usrId;
+		req["params"]["deviceId"] = deviceId;
+		req["params"]["token"] = this->GenerateToken(deviceId);
+		std::string res;
+		this->POST(this->PSC_URL_GET_V2, jsonfile::jsontoString(req), res);
+		if (debugmode)std::cout << jsonfile::jsontoString(req) << "\n" << res;
+		return SUCCEED;
+	}
 	int Init() {
 		this->addHeader("User-Agent: Mozilla/5.0 (iPhone; CPU iPhone OS 18_5 like Mac OS X");
 		this->addHeader("Content-Type: application/json");
@@ -234,6 +252,6 @@ int main() {
 	PanasonicSmartChinaControl pscc;
 	pscc.Init();
 	pscc.Login(username, password);
-	pscc.GetDevice();
-	pscc.Set(deviceId);
+//	pscc.GetDevice();
+	pscc.getStatus_v2(deviceId);
 }
