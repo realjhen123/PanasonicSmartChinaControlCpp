@@ -32,6 +32,9 @@ bool debugmode = true;
 #else
 bool debugmode = false;
 #endif
+#ifdef _CROWSERVER
+#include <crow.h>
+#endif
 
 class jsonfile {
 public:
@@ -303,6 +306,7 @@ int main() {
 	pscc.Init();
 	pscc.Login(username, password);
 //	pscc.GetDevice();
-	pscc.getStatus_v2(deviceId);
-	pscc.easy_control_v2(deviceId, false, 1);
+//	pscc.getStatus_v2(deviceId);
+//	pscc.easy_control_v2(deviceId, false, 1);
+
 }
