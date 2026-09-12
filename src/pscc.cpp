@@ -27,12 +27,13 @@
 #include "openssl/md5.h"
 
 #define SUCCEED 0
+#define ENABLE_CROWSERVER
 #ifdef _DEBUG 
 bool debugmode = true;
 #else
 bool debugmode = false;
 #endif
-#ifdef _CROWSERVER
+#ifdef ENABLE_CROWSERVER
 #include <crow.h>
 #endif
 
