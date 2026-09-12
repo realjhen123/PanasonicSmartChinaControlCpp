@@ -29,7 +29,7 @@
 #define SUCCEED 0
 #ifdef _DEBUG 
 bool debugmode = true;
-#elif
+#else
 bool debugmode = false;
 #endif
 
