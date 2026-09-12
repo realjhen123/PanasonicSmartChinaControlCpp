@@ -279,8 +279,7 @@ public:
 		Json::Value p;
 		this->timer(p);
 		std::cout << p.toStyledString();
-		//p["runSta"] = runSta ? 1 : 0;
-		p["runSta"] = 0;
+		p["runSta"] = runSta ? 1 : 0;
 		p["airVo"] = airVo;
 		return this->set_v2(deviceId, p);
 	}
@@ -304,5 +303,5 @@ int main() {
 	pscc.Login(username, password);
 //	pscc.GetDevice();
 	pscc.getStatus_v2(deviceId);
-//	pscc.easy_control_v2(deviceId, false, 1);
+	pscc.easy_control_v2(deviceId, false, 1);
 }
