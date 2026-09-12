@@ -231,8 +231,58 @@ public:
 		req["params"]["token"] = this->GenerateToken(deviceId);
 		std::string res;
 		this->POST(this->PSC_URL_GET_V2, jsonfile::jsontoString(req), res);
-		if (debugmode)std::cout << jsonfile::jsontoString(req) << "\n" << res;
+		if (debugmode)std::cout << "\n" << res;
 		return SUCCEED;
+	}
+	int set_v2(std::string deviceId, Json::Value params) {
+		Json::Value req;
+		req["id"] = 1;
+		req["uiVersion"] = 4.0;
+		req["params"] = params;
+		req["params"]["usrId"] = this->usrId;
+		req["params"]["deviceId"] = deviceId;
+		req["params"]["token"] = this->GenerateToken(deviceId);
+		std::string res;
+		this->POST(this->PSC_URL_SET_V2, jsonfile::jsontoString(req), res);
+		if (debugmode)std::cout << res;
+		return SUCCEED;
+	}
+	int timer(Json::Value& p, int timerid, int action, int state, int hour, int min, int week) {
+		bool r = timerid > 6 || timerid < 0;
+		r |= action != 0 && action != 1;
+		r |= state != 0 && state != 1;
+		r |= hour >= 24 || hour < 0;
+		r |= min >= 60 || min < 0;
+		if (action == state && state == hour && hour == min && min == week && week == 255);
+		else if (r)return -1;
+		p["tSta" + std::to_string(timerid)] = action;
+		p["tSet" + std::to_string(timerid)] = state;
+		p["tH" + std::to_string(timerid)] = hour;
+		p["tMin" + std::to_string(timerid)] = min;
+		p["tWeek" + std::to_string(timerid)] = week;
+		return SUCCEED;
+	}
+	int timer(Json::Value& p) {
+		for (int i = 1; i <= 6; i++) {
+			this->timer(p, i, 255, 255, 255, 255, 255);
+		}
+		return SUCCEED;
+	}
+	int otherset(Json::Value p) {
+		p["filSet"] = 0;
+		p["holM"] = 255;
+		p["saFilEx"] = 255;
+		p["oaFilExPM"] = 255;
+		return SUCCEED;
+	}
+	int easy_control_v2(std::string deviceId,bool runSta,int airVo) {
+		Json::Value p;
+		this->timer(p);
+		std::cout << p.toStyledString();
+		//p["runSta"] = runSta ? 1 : 0;
+		p["runSta"] = 0;
+		p["airVo"] = airVo;
+		return this->set_v2(deviceId, p);
 	}
 	int Init() {
 		this->addHeader("User-Agent: Mozilla/5.0 (iPhone; CPU iPhone OS 18_5 like Mac OS X");
@@ -254,4 +304,5 @@ int main() {
 	pscc.Login(username, password);
 //	pscc.GetDevice();
 	pscc.getStatus_v2(deviceId);
+//	pscc.easy_control_v2(deviceId, false, 1);
 }
