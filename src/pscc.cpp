@@ -309,9 +309,6 @@ int main() {
 	PanasonicSmartChinaControl pscc;
 	pscc.Init();
 	pscc.Login(username, password);
-//	pscc.GetDevice();
-//	pscc.getStatus_v2(deviceId);
-//	pscc.easy_control_v2(deviceId, false, 1);
 #ifdef ENABLE_CROWSERVER
 	crow::SimpleApp app;
 	std::string status_cache = "";
