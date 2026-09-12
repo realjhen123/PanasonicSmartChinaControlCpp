@@ -229,13 +229,11 @@ public:
 	}
 };
 int main() {
-	std::string username, password;
+	std::string username, password, deviceId;
 #include "passwd.h"
 	PanasonicSmartChinaControl pscc;
 	pscc.Init();
 	pscc.Login(username, password);
 	pscc.GetDevice();
-	std::string deviceId;
-	deviceId = "";
 	pscc.Set(deviceId);
 }
