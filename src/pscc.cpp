@@ -136,6 +136,8 @@ private:
 		curl_easy_setopt(this->curl_, CURLOPT_POSTFIELDSIZE, requestbody_.size());
 		curl_easy_setopt(this->curl_, CURLOPT_SSL_VERIFYPEER, 0L);
 		curl_easy_setopt(this->curl_, CURLOPT_SSL_VERIFYHOST, 0L);
+		curl_easy_setopt(this->curl_, CURLOPT_CONNECTTIMEOUT, 5L);
+		curl_easy_setopt(this->curl_, CURLOPT_TIMEOUT, 15L);
 		CURLcode res = curl_easy_perform(this->curl_);
 		return res;
 	}
@@ -286,13 +288,12 @@ public:
 		Json::Value p;
 		this->timer(p);
 		this->otherset(p);
-		std::cout << p.toStyledString();
 		p["runSta"] = runSta ? 1 : 0;
 		p["airVo"] = airVo;
 		return this->set_v2(deviceId, p);
 	}
 	int Init() {
-		this->addHeader("User-Agent: Mozilla/5.0 (iPhone; CPU iPhone OS 18_5 like Mac OS X");
+		this->addHeader("User-Agent: Mozilla/5.0 (iPhone; CPU iPhone OS 18_5 like Mac OS X)");
 		this->addHeader("Content-Type: application/json");
 		return SUCCEED;
 	}
@@ -355,10 +356,10 @@ int main() {
 		else if (status_type == "filter") {
 			Json::Value q = jsonfile::readJsonFromString(s);
 			Json::Value res_q;
-			res_q["filterCleanTimer"] = q["results"]["filClTL"].asInt();
-			res_q["primaryFilterCleanTimer"] = q["results"]["reFilExTL"].asInt();
-			res_q["PM2.5FilterCleanTimer"] = q["results"]["oaFilExPMTL"].asInt();
-			res_q["returnAirSideFilterCleanTimer"] = q["results"]["oaFilClFirTL"].asInt();
+			res_q["filterCleanCountdown"] = q["results"]["filClTL"].asInt();
+			res_q["primaryFilterCleanCountdown"] = q["results"]["reFilExTL"].asInt();
+			res_q["PM2.5FilterCleanCountdown"] = q["results"]["oaFilExPMTL"].asInt();
+			res_q["returnAirSideFilterCleanCountdown"] = q["results"]["oaFilClFirTL"].asInt();
 			res.write(jsonfile::jsontoString(res_q));
 			res.end();
 			res.code = 200;
