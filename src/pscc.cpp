@@ -396,6 +396,7 @@ int main() {
 			pscc.easy_control_v2(deviceId, false, 255);
 		}
 		res.code = 200;
+		res.end();
 		return;
 		});
 	CROW_ROUTE(app, "/control/airvo/<int>").methods("GET"_method)([&](const crow::request req, crow::response& res, int airVo) {
@@ -409,6 +410,7 @@ int main() {
 		}
 		pscc.easy_control_v2(deviceId, true, airVo);
 		res.code = 200;
+		res.end();
 		return;
 		});
 	app.loglevel(crow::LogLevel::Critical);
