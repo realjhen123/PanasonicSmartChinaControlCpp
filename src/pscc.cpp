@@ -322,6 +322,10 @@ int main() {
 		return;
 		});
 	CROW_ROUTE(app, "/status/<string>").methods("GET"_method)([&](const crow::request req, crow::response& res, std::string status_type) {
+		res.set_header("Access-Control-Allow-Origin", "*");
+		res.set_header("Access-Control-Allow-Methods", "GET, OPTIONS");
+		res.set_header("Access-Control-Allow-Headers", "Range, *");
+		res.set_header("Access-Control-Expose-Headers", "Content-Range, Content-Length, Accept-Ranges");
 		time_t sec = std::time(nullptr);
 		std::string s;
 		{
@@ -382,6 +386,10 @@ int main() {
 		}
 		});
 	CROW_ROUTE(app, "/control/power/<string>").methods("GET"_method)([&](const crow::request req, crow::response& res, std::string status_type) {
+		res.set_header("Access-Control-Allow-Origin", "*");
+		res.set_header("Access-Control-Allow-Methods", "GET, OPTIONS");
+		res.set_header("Access-Control-Allow-Headers", "Range, *");
+		res.set_header("Access-Control-Expose-Headers", "Content-Range, Content-Length, Accept-Ranges");
 		if (status_type == "on") {
 			pscc.easy_control_v2(deviceId, true, 255);
 		}else {
@@ -391,6 +399,10 @@ int main() {
 		return;
 		});
 	CROW_ROUTE(app, "/control/airvo/<int>").methods("GET"_method)([&](const crow::request req, crow::response& res, int airVo) {
+		res.set_header("Access-Control-Allow-Origin", "*");
+		res.set_header("Access-Control-Allow-Methods", "GET, OPTIONS");
+		res.set_header("Access-Control-Allow-Headers", "Range, *");
+		res.set_header("Access-Control-Expose-Headers", "Content-Range, Content-Length, Accept-Ranges");
 		if (airVo > 3 || airVo <= 0) {
 			res.code = 401;
 			return;
