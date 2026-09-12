@@ -230,8 +230,7 @@ public:
 };
 int main() {
 	std::string username, password;
-	username = "";
-	password = "";
+#include "passwd.h"
 	PanasonicSmartChinaControl pscc;
 	pscc.Init();
 	pscc.Login(username, password);
